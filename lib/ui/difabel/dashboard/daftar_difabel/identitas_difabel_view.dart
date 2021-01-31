@@ -29,7 +29,12 @@ class IdentitasDifabelView extends StatelessWidget {
             hint: "Masukkan NIK (Isi dengan angka 0 jika tidak punya)",
             tipe: TextInputType.number,
             onSaved: null,
-            validator: null),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "NIK Difabel tidak boleh kosong, isi dengan 0 jika tidak ada";
+              }
+              return null;
+            }),
         SizedBox(
           height: 0.02.sh,
         ),
@@ -38,7 +43,12 @@ class IdentitasDifabelView extends StatelessWidget {
             title: "No KK Difabel",
             tipe: TextInputType.number,
             onSaved: null,
-            validator: null),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "No KK Difabel Tidak boleh kosong, isi dengan 0 jika tidak ada";
+              }
+              return null;
+            }),
         SizedBox(
           height: 0.02.sh,
         ),
@@ -47,7 +57,12 @@ class IdentitasDifabelView extends StatelessWidget {
             title: "Nama Difabel",
             tipe: TextInputType.text,
             onSaved: null,
-            validator: null),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "Nama Difabel tidak boleh kosong";
+              }
+              return null;
+            }),
         SizedBox(
           height: 0.02.sh,
         ),
@@ -56,7 +71,12 @@ class IdentitasDifabelView extends StatelessWidget {
             title: "Tempat Lahir Difabel",
             tipe: TextInputType.text,
             onSaved: null,
-            validator: null),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "Tempat Lahir Difabel tidak boleh kosong";
+              }
+              return null;
+            }),
         SizedBox(
           height: 0.02.sh,
         ),

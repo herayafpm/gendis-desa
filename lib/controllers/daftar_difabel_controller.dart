@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:division/division.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gendisdesa/bloc/difabel/difabel_bloc.dart';
@@ -42,6 +43,7 @@ class DaftarDifabelController extends GetxController {
   final selectedAgamaIbu = "".obs;
   final listKondisiOrangTua = [].obs;
   final selectedKondisiOrangTua = "".obs;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController nikDifabelController = TextEditingController();
   TextEditingController nokkDifabelController = TextEditingController();
   TextEditingController namaDifabelController = TextEditingController();
@@ -94,7 +96,6 @@ class DaftarDifabelController extends GetxController {
   TextEditingController kecamatanIbuDifabelController = TextEditingController();
   TextEditingController kabupatenIbuDifabelController = TextEditingController();
   TextEditingController notelpIbuDifabelController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void onInit() {
@@ -268,74 +269,126 @@ class DaftarDifabelController extends GetxController {
         ));
   }
 
+  void flushBarError(String message) {
+    Flushbar(
+      title: "Validasi Error",
+      message: message ?? "",
+      duration: Duration(seconds: 5),
+      icon: Icon(
+        Icons.do_not_disturb,
+        color: Colors.redAccent,
+      ),
+      flushbarPosition: FlushbarPosition.TOP,
+    )..show(Get.context);
+  }
+
   void proses(DifabelBloc bloc) async {
-    isLoading.value = !isLoading.value;
-    orangtua.update((val) {
-      // ayah
-      val.ayah_nik = nikAyahDifabelController.text;
-      val.ayah_no_kk = nokkAyahDifabelController.text;
-      val.ayah_nama = namaAyahDifabelController.text;
-      val.ayah_tempat_lahir = tempatlahirAyahDifabelController.text;
-      val.ayah_alamat_jalan_perumahan = alamatAyahDifabelController.text;
-      val.ayah_alamat_rt = rtAyahDifabelController.text;
-      val.ayah_alamat_rw = rwAyahDifabelController.text;
-      val.ayah_alamat_desa = desaAyahDifabelController.text;
-      val.ayah_alamat_kecamatan = kecamatanAyahDifabelController.text;
-      val.ayah_alamat_kabupaten = kabupatenAyahDifabelController.text;
-      val.ayah_alamat_telepon = notelpAyahDifabelController.text;
-      // Ibu
-      val.ibu_nik = nikIbuDifabelController.text;
-      val.ibu_no_kk = nokkIbuDifabelController.text;
-      val.ibu_nama = namaIbuDifabelController.text;
-      val.ibu_tempat_lahir = tempatlahirIbuDifabelController.text;
-      val.ibu_alamat_jalan_perumahan = alamatIbuDifabelController.text;
-      val.ibu_alamat_rt = rtIbuDifabelController.text;
-      val.ibu_alamat_rw = rwIbuDifabelController.text;
-      val.ibu_alamat_desa = desaIbuDifabelController.text;
-      val.ibu_alamat_kecamatan = kecamatanIbuDifabelController.text;
-      val.ibu_alamat_kabupaten = kabupatenIbuDifabelController.text;
-      val.ibu_alamat_telepon = notelpIbuDifabelController.text;
-    });
-    difabel.value.orang_tua = orangtua.value;
-    difabel.update((val) {
-      val.difabel_nik = nikDifabelController.text;
-      val.difabel_no_kk = nokkDifabelController.text;
-      val.difabel_nama = namaDifabelController.text;
-      val.difabel_tempat_lahir = tempatlahirDifabelController.text;
-      val.alamat_jalan_perumahan = alamatDifabelController.text;
-      val.alamat_rt = rtDifabelController.text;
-      val.alamat_rw = rwDifabelController.text;
-      val.alamat_desa = desaDifabelController.text;
-      val.alamat_kecamatan = kecamatanDifabelController.text;
-      val.alamat_kabupaten = kabupatenDifabelController.text;
-      val.alamat_telepon = notelpDifabelController.text;
-      val.difabel_no_dtks = nodtksDifabelController.text;
-      val.difabel_permasalahan = permasalahanDifabelController.text;
-      if (val.keterampilan_id != 0) {
-        keterampilanlainnyaDifabelController.clear();
+    if (nikDifabelController.text.isEmpty) {
+      flushBarError(
+          "NIK Difabel tidak boleh kosong, jika tidak ada isi dengan angka 0");
+      nikDifabelController.text = "0";
+    } else if (nokkDifabelController.text.isEmpty) {
+      flushBarError("No KK Difabel tidak boleh kosong");
+    } else if (namaDifabelController.text.isEmpty) {
+      flushBarError("Nama Difabel tidak boleh kosong");
+    } else if (difabel.value.difabel_jk == null) {
+      flushBarError("Jenis Kelamin Difabel tidak boleh kosong");
+    } else if (difabel.value.agama_id == null) {
+      flushBarError("Agama Difabel tidak boleh kosong");
+    } else if (difabel.value.jenis_disabilitas_id == null) {
+      flushBarError("Jenis Disabilitas Difabel tidak boleh kosong");
+    } else if (difabel.value.alat_bantu_id == null) {
+      flushBarError("Alat Bantu Difabel tidak boleh kosong");
+    } else if (difabel.value.keterampilan_id == null) {
+      flushBarError("Keterampilan Difabel tidak boleh kosong");
+    } else if (difabel.value.organisasi_id == null) {
+      flushBarError("Organisasi Difabel tidak boleh kosong");
+    } else if (difabel.value.pekerjaan_id == null) {
+      flushBarError("Pekerjaan Difabel tidak boleh kosong");
+    } else if (difabel.value.kebutuhan_perawatan_id == null) {
+      flushBarError("Kebutuhan Perawatan Difabel tidak boleh kosong");
+    } else if (difabel.value.kebutuhan_pelatihan_id == null) {
+      flushBarError("Kebutuhan Pelatihan Difabel tidak boleh kosong");
+    } else if (difabel.value.kondisi_orang_tua_id == null) {
+      flushBarError("Kondisi Orang Tua tidak boleh kosong");
+    } else if (difabel.value.kondisi_difabel_id == null) {
+      flushBarError("Kondisi Difabel tidak boleh kosong");
+    } else {
+      if (nikAyahDifabelController.text.isEmpty) {
+        nikAyahDifabelController.text = "0";
       }
-      val.difabel_keterampilan_lainnya =
-          keterampilanlainnyaDifabelController.text;
-      if (val.organisasi_id != 0) {
-        organisasilainnyaDifabelController.clear();
+      if (nikIbuDifabelController.text.isEmpty) {
+        nikIbuDifabelController.text = "0";
       }
-      val.difabel_organisasi_lainnya = organisasilainnyaDifabelController.text;
-      if (val.pekerjaan_id != 0) {
-        pekerjaanlainnyaDifabelController.clear();
-      }
-      val.difabel_pekerjaan_lainnya = pekerjaanlainnyaDifabelController.text;
-      if (val.kebutuhan_pelatihan_id != 0) {
-        kebutuhanpelatihanlainnyaDifabelController.clear();
-      }
-      val.difabel_pelatihan_lainnya =
-          kebutuhanpelatihanlainnyaDifabelController.text;
-      if (val.kebutuhan_perawatan_id != 0) {
-        kebutuhanperawatanlainnyaDifabelController.clear();
-      }
-      val.difabel_perawatan_lainnya =
-          kebutuhanperawatanlainnyaDifabelController.text;
-    });
-    bloc.add(DifabelFormBlocEvent(difabel.value));
+      isLoading.value = !isLoading.value;
+      orangtua.update((val) {
+        // ayah
+        val.ayah_nik = nikAyahDifabelController.text;
+        val.ayah_no_kk = nokkAyahDifabelController.text;
+        val.ayah_nama = namaAyahDifabelController.text;
+        val.ayah_tempat_lahir = tempatlahirAyahDifabelController.text;
+        val.ayah_alamat_jalan_perumahan = alamatAyahDifabelController.text;
+        val.ayah_alamat_rt = rtAyahDifabelController.text;
+        val.ayah_alamat_rw = rwAyahDifabelController.text;
+        val.ayah_alamat_desa = desaAyahDifabelController.text;
+        val.ayah_alamat_kecamatan = kecamatanAyahDifabelController.text;
+        val.ayah_alamat_kabupaten = kabupatenAyahDifabelController.text;
+        val.ayah_alamat_telepon = notelpAyahDifabelController.text;
+        // Ibu
+        val.ibu_nik = nikIbuDifabelController.text;
+        val.ibu_no_kk = nokkIbuDifabelController.text;
+        val.ibu_nama = namaIbuDifabelController.text;
+        val.ibu_tempat_lahir = tempatlahirIbuDifabelController.text;
+        val.ibu_alamat_jalan_perumahan = alamatIbuDifabelController.text;
+        val.ibu_alamat_rt = rtIbuDifabelController.text;
+        val.ibu_alamat_rw = rwIbuDifabelController.text;
+        val.ibu_alamat_desa = desaIbuDifabelController.text;
+        val.ibu_alamat_kecamatan = kecamatanIbuDifabelController.text;
+        val.ibu_alamat_kabupaten = kabupatenIbuDifabelController.text;
+        val.ibu_alamat_telepon = notelpIbuDifabelController.text;
+      });
+      difabel.value.orang_tua = orangtua.value;
+      difabel.update((val) {
+        val.difabel_nik = nikDifabelController.text;
+        val.difabel_no_kk = nokkDifabelController.text;
+        val.difabel_nama = namaDifabelController.text;
+        val.difabel_tempat_lahir = tempatlahirDifabelController.text;
+        val.alamat_jalan_perumahan = alamatDifabelController.text;
+        val.alamat_rt = rtDifabelController.text;
+        val.alamat_rw = rwDifabelController.text;
+        val.alamat_desa = desaDifabelController.text;
+        val.alamat_kecamatan = kecamatanDifabelController.text;
+        val.alamat_kabupaten = kabupatenDifabelController.text;
+        val.alamat_telepon = notelpDifabelController.text;
+        val.difabel_no_dtks = nodtksDifabelController.text;
+        val.difabel_permasalahan = permasalahanDifabelController.text;
+        if (val.keterampilan_id != 0) {
+          keterampilanlainnyaDifabelController.clear();
+        }
+        val.difabel_keterampilan_lainnya =
+            keterampilanlainnyaDifabelController.text;
+        if (val.organisasi_id != 0) {
+          organisasilainnyaDifabelController.clear();
+        }
+        val.difabel_organisasi_lainnya =
+            organisasilainnyaDifabelController.text;
+        if (val.pekerjaan_id != 0) {
+          pekerjaanlainnyaDifabelController.clear();
+        }
+        val.difabel_pekerjaan_lainnya = pekerjaanlainnyaDifabelController.text;
+        if (val.kebutuhan_pelatihan_id != 0) {
+          kebutuhanpelatihanlainnyaDifabelController.clear();
+        }
+        val.difabel_pelatihan_lainnya =
+            kebutuhanpelatihanlainnyaDifabelController.text;
+        if (val.kebutuhan_perawatan_id != 0) {
+          kebutuhanperawatanlainnyaDifabelController.clear();
+        }
+        val.difabel_perawatan_lainnya =
+            kebutuhanperawatanlainnyaDifabelController.text;
+      });
+      bloc.add(DifabelFormBlocEvent(difabel.value));
+    }
   }
 
   void clearSuccess() {

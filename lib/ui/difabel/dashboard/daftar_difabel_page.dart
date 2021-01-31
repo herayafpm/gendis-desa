@@ -57,6 +57,7 @@ class DaftarDifabelPage extends StatelessWidget {
 // ignore: must_be_immutable
 class BodyPendaftaranDifabelView extends StatelessWidget {
   final controller = Get.find<DaftarDifabelController>();
+
   // ignore: close_sinks
   DifabelBloc difabelBloc;
   @override
@@ -139,44 +140,47 @@ class BodyPendaftaranDifabelView extends StatelessWidget {
           )..show(Get.context);
         }
       },
-      child: ListView(
-        children: [
-          IdentitasDifabelView(),
-          SizedBox(
-            height: 0.02.sh,
-          ),
-          DataAyahView(),
-          SizedBox(
-            height: 0.02.sh,
-          ),
-          DataIbuView(),
-          SizedBox(
-            height: 0.02.sh,
-          ),
-          Obx(() => ItemPickerComp(
-                title: "Kondisi Orang Tua",
-                text: (controller.difabel.value.kondisi_orang_tua_id != null)
-                    ? controller.selectedKondisiOrangTua.value
-                    : "Kondisi Orang Tua",
+      child: Form(
+        key: controller.formKey,
+        child: ListView(
+          children: [
+            IdentitasDifabelView(),
+            SizedBox(
+              height: 0.02.sh,
+            ),
+            DataAyahView(),
+            SizedBox(
+              height: 0.02.sh,
+            ),
+            DataIbuView(),
+            SizedBox(
+              height: 0.02.sh,
+            ),
+            Obx(() => ItemPickerComp(
+                  title: "Kondisi Orang Tua",
+                  text: (controller.difabel.value.kondisi_orang_tua_id != null)
+                      ? controller.selectedKondisiOrangTua.value
+                      : "Kondisi Orang Tua",
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    controller.showKondisiOrangTuaPicker(difabelBloc);
+                  },
+                )),
+            SizedBox(
+              height: 0.04.sh,
+            ),
+            Obx(() => ItemButtonComp(
+                title: "Kirim Data",
+                isLoading: controller.isLoading.value,
                 onTap: () {
                   FocusScope.of(context).unfocus();
-                  controller.showKondisiOrangTuaPicker(difabelBloc);
-                },
-              )),
-          SizedBox(
-            height: 0.04.sh,
-          ),
-          Obx(() => ItemButtonComp(
-              title: "Kirim Data",
-              isLoading: controller.isLoading.value,
-              onTap: () {
-                FocusScope.of(context).unfocus();
-                controller.proses(difabelBloc);
-              })),
-          SizedBox(
-            height: 0.04.sh,
-          ),
-        ],
+                  controller.proses(difabelBloc);
+                })),
+            SizedBox(
+              height: 0.04.sh,
+            ),
+          ],
+        ),
       ),
     );
   }
